@@ -5,15 +5,19 @@ export default class extends Controller {
   static values = {
     content: String
   }
-  // used to debug the copy to clipboard
-  // connect(){
-  //   console.log(this.contentValue)
-  // }
+
+  connect(){
+    this.originalText = this.element.textContent
+  }
 
   copy(){
     navigator.clipboard.writeText(this.contentValue).then(
       () => {
-        /* clipboard successfully set */
+        this.element.textContent = "Copied!"
+        setTimeout(() => {
+          this.element.textContent = this.originalText
+        }, 1000
+        )
       },
       () => {
        alert("Failed to copy to Clipboard")
