@@ -38,7 +38,9 @@
     <div class="text-right">
       <%= button_to "Remove",
         password_share_path(@password, user_password.user),
-        method: :delete, data: {turbo_confirm: "Are you sure?"} if current_user_password.shareable?
+        method: :delete,
+        class: "no-underline hover:underline",
+        data: {turbo_confirm: "Are you sure?"} if current_user_password.shareable?
       %>
     </div>
   </div>
