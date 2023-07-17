@@ -1,3 +1,4 @@
+<%= link_to "← Back", root_path, class:"block mb-4 no-underline text-xs hover:underline" %>
 <div class="mb-4 flex justify-between items-center">
   <h1 class="mb-0">
     <%= @password.url %>
@@ -7,16 +8,28 @@
       </svg>
     <% end %>
   </h1>
-  <%= link_to "Edit", edit_password_path%>
+  <%= link_to "Edit", edit_password_path, class:"no-underline hover:underline"%>
 </div>
-
-<h6  class="mb-1">Username / Email</h6>
+<h3>Credentials</h3>
+<h6  class="mb-1 text-sm">Username / Email</h6>
 <div class="flex items-center gap-1">
   <pre class="my-0 flex-grow"><code><%= @password.username %></code></pre>
-  <%= button_tag "Copy", class: "px-5 py-2.5 bg-gray-200 rounded", data: { controller: "clipboard", action: "click->clipboard#copy", clipboard_content_value: @password.username }%>
+  <%= button_tag "Copy", class: "px-5 py-2.5 bg-gray-200 rounded, no-underline hover:underline", data: { controller: "clipboard", action: "click->clipboard#copy", clipboard_content_value: @password.username }%>
 </div>
-<h6 >Password</h6>
+<h6 class="mt-4 mb-1 text-sm">Password</h6>
 <div class="flex items-center gap-1">
   <pre class="my-0 flex-grow"><code><%= @password.password %></code></pre>
-  <%= button_tag "Copy", class: "px-5 py-2.5 bg-gray-200 rounded", data: { controller: "clipboard", action: "click->clipboard#copy", clipboard_content_value: @password.password }%>
+  <%= button_tag "Copy", class: "px-5 py-2.5 bg-gray-200 rounded no-underline hover:underline", data: { controller: "clipboard", action: "click->clipboard#copy", clipboard_content_value: @password.password }%>
+</div>
+
+<h3>Share</h3>
+
+<div class="flex flex-col gap-1 divide-y divide-gray-100">
+  <%= link_to "Add an User", new_password_share_path(@password), class:"no-underline hover:underline" %>
+  <%@password.users.excluding(current_user).each do |user|%>
+  <div class="flex justify-between items-center">
+    <div><%= user.email %></div>
+    <%= button_to "Remove", password_share_path(@password, user), method: :delete, data: {turbo_confirm: "Are you sure?"}%>
+  </div>
+  <% end %>
 </div>
