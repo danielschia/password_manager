@@ -1,7 +1,8 @@
 class PasswordsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_password, except: [ :index, :new, :create ] 
-
+  before_action :require_editor_permission, only: [:edit, :update]
+  before_action :require_deletable_permission, only: :destroy
   def index
     @passwords = current_user.passwords
   end
@@ -15,8 +16,8 @@ class PasswordsController < ApplicationController
 
   def create
     @password = Password.new(password_params)
-    @password.user_passwords(user: current_user, role: :owner)
-    if @password.persisted?
+    @password.user_passwords.new(user: current_user, role: :owner)
+    if @password.save
       redirect_to @password
     else
       render :new, status: :unprocessable_entity
@@ -43,9 +44,18 @@ class PasswordsController < ApplicationController
 
   def set_password
     @password = current_user.passwords.find(params[:id])
+    @user_password = current_user.user_passwords.find_by(password: @password)
   end
 
   def password_params
     params.require(:password).permit(:url, :username, :password)
+  end
+
+  def require_editor_permission
+    redirect_to @password unless current_user @user_password.editable_by?(current_user)
+  end
+
+  def require_deletable_permission
+    redirect_to @password unless current_user @user_password.deletable_by?(current_user)
   end
 end
