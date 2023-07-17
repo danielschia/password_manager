@@ -44,7 +44,6 @@ class PasswordsController < ApplicationController
 
   def set_password
     @password = current_user.passwords.find(params[:id])
-    @user_password = current_user.user_passwords.find_by(password: @password)
   end
 
   def password_params
@@ -52,10 +51,10 @@ class PasswordsController < ApplicationController
   end
 
   def require_editable_permission
-    redirect_to @password unless current_user @user_password.editable_by?(current_user)
+    redirect_to @password unless current_user_password.editable?
   end
 
   def require_deletable_permission
-    redirect_to @password unless current_user @user_password.deletable_by?(current_user)
+    redirect_to @password unless current_user_password.deletable?
   end
 end
